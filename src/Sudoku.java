@@ -2,7 +2,6 @@ import java.io.FileReader;
 import java.util.ArrayList;
 
 public class Sudoku {
-
     private static class Cell {
         private int value;
         private ArrayList<Integer> possibleValues;
