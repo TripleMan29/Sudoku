@@ -1,5 +1,6 @@
 import java.io.FileReader;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 public class Sudoku {
     private static class Cell {
@@ -15,15 +16,7 @@ public class Sudoku {
 
             if (value == 0) {
                 possibleValues = new ArrayList<>();
-                possibleValues.add(1);
-                possibleValues.add(2);
-                possibleValues.add(3);
-                possibleValues.add(4);
-                possibleValues.add(5);
-                possibleValues.add(6);
-                possibleValues.add(7);
-                possibleValues.add(8);
-                possibleValues.add(9);
+                possibleValues.addAll(Arrays.asList(1,2,3,4,5,6,7,8,9));
             }
         }
 
@@ -32,19 +25,20 @@ public class Sudoku {
             int segmentFirstLine = line - line % 3;
 
             for (int i = 0; i < 9; i++) {
-                int lineValue = field[line][i].value;
-                int columnValue = field[i][column].value;
-                int segmentValue = field[segmentFirstLine + i / 3][segmentFirstColumn + i % 3].value;
+                Integer lineValue = field[line][i].value;
+                Integer columnValue = field[i][column].value;
+                Integer segmentValue = field[segmentFirstLine + i / 3][segmentFirstColumn + i % 3].value;
 
                 if (lineValue != 0) {
-                    possibleValues.remove((Integer)lineValue);
+                    possibleValues.remove(lineValue);
                 }
                 if (columnValue != 0) {
-                    possibleValues.remove((Integer)columnValue);
+                    possibleValues.remove(columnValue);
                 }
                 if (segmentValue != 0) {
-                    possibleValues.remove((Integer)segmentValue);
+                    possibleValues.remove(segmentValue);
                 }
+
             }
         }
 
