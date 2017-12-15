@@ -119,7 +119,7 @@ public class Sudoku {
                 }
             }
             if (i == 2 || i == 5) {
-                System.out.print("\n");
+                System.out.println();
                 for (int j = 0; j < 8; j++) {
                     System.out.print("--");
                     if (j == 2 || j == 4) {
@@ -130,7 +130,7 @@ public class Sudoku {
                     }
                 }
             }
-            System.out.print('\n');
+            System.out.println();
         }
     }
 
