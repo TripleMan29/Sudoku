@@ -1,138 +1,90 @@
-import java.io.FileReader;
-import java.util.ArrayList;
-import java.util.Arrays;
-
-public class Sudoku {
-    private static class Cell {
-        private int value;
-        private ArrayList<Integer> possibleValues;
-        private int line;
-        private int column;
-
-        Cell(int value, int line, int column) {
-            this.value = value;
-            this.line = line;
-            this.column = column;
-
-            if (value == 0) {
-                possibleValues = new ArrayList<>();
-                possibleValues.addAll(Arrays.asList(1,2,3,4,5,6,7,8,9));
-            }
-        }
-
-        private void identPossibleValues (Cell[][] field) {
-            int segmentFirstColumn = column - column % 3;
-            int segmentFirstLine = line - line % 3;
-
-            for (int i = 0; i < 9; i++) {
-                Integer lineValue = field[line][i].value;
-                Integer columnValue = field[i][column].value;
-                Integer segmentValue = field[segmentFirstLine + i / 3][segmentFirstColumn + i % 3].value;
-
-                if (lineValue != 0) {
-                    possibleValues.remove(lineValue);
-                }
-                if (columnValue != 0) {
-                    possibleValues.remove(columnValue);
-                }
-                if (segmentValue != 0) {
-                    possibleValues.remove(segmentValue);
-                }
-
-            }
-        }
-
-        private int getUniqueValue (Cell[][] field) {
-            int currentValue;
-            boolean isUnique;
-
-            for (int i = 0; i < possibleValues.size(); i++) {
-                currentValue = possibleValues.get(i);
-
-                int segmentFirstColumn = column - column % 3;
-                int segmentFirstLine = line - line % 3;
-
-                isUnique = true;
-                for (int k = 0; k < 9; k++) {
-                    if (k != i) {
-                        if (field[line][k].value == 0 && field[line][k].possibleValues.contains(currentValue)) {
-                            isUnique = false;
-                            break;
-                        }
-                    }
-                }
-                if (isUnique) return currentValue;
-
-                isUnique = true;
-                for (int k = 0; k < 9; k++) {
-                    if (k != i) {
-                        if (field[k][column].value == 0 && field[k][column].possibleValues.contains(currentValue)) {
-                            isUnique = false;
-                            break;
-                        }
-                    }
-                }
-                if (isUnique) return currentValue;
-
-                isUnique = true;
-                for (int k = 0; k < 9; k++) {
-                    if (k != i) {
-                        if (field[segmentFirstLine + k / 3][segmentFirstColumn + k % 3].value == 0 && field[segmentFirstLine + k / 3][segmentFirstColumn + k % 3].possibleValues.contains(currentValue)) {
-                            isUnique = false;
-                            break;
-                        }
-                    }
-                }
-                if (isUnique) return currentValue;
-            }
-            return 0;
-        }
-    }
+class Sudoku {
 
     static void printSudokuSolution(String dir) throws Exception {
-        Cell[][] field = new Cell[9][9];
-        FileReader reader = new FileReader(dir);
-        int c;
-        int i = 0;
-        while((c = reader.read()) != -1){
-            if ((c >= '0') && (c <= '9')) {
-                field[i / 9][i % 9] = new Cell(c - '0', i / 9, i % 9);
-                i++;
-            }
-        }
+
+        Field field = new Field(dir);
 
         field = sudoku(field);
 
-        for (i = 0; i < 9; i++) {
-            for (int j = 0; j < 9; j++) {
-                if (j == 0 || j == 3 || j == 6) {
-                    System.out.print("|");
-                }
-                if (field != null) {
-                    System.out.print(field[i][j].value + "|");
-                }
+        field.printSudoku();
+    }
+
+    private static void identPossibleValues (Field field, Cell cell) {
+        int line = cell.line;
+        int column = cell.column;
+
+        int segmentFirstColumn = column - column % 3;
+        int segmentFirstLine = line - line % 3;
+
+        for (int i = 0; i < 9; i++) {
+            int lineValue = field.field[line][i].value;
+            int columnValue = field.field[i][column].value;
+            int segmentValue = field.field[segmentFirstLine + i / 3][segmentFirstColumn + i % 3].value;
+
+            if (lineValue != 0) {
+                cell.possibleValues.remove(lineValue);
             }
-            if (i == 2 || i == 5) {
-                System.out.println();
-                for (int j = 0; j < 8; j++) {
-                    System.out.print("--");
-                    if (j == 2 || j == 4) {
-                        System.out.print("||");
-                    }
-                    if (j == 3) {
-                        System.out.print("-");
-                    }
-                }
+            if (columnValue != 0) {
+                cell.possibleValues.remove(columnValue);
             }
-            System.out.println();
+            if (segmentValue != 0) {
+                cell.possibleValues.remove(segmentValue);
+            }
         }
     }
 
-    private static Cell[][] sudoku(Cell[][] OldField) {
-        Cell[][] field = new Cell[9][9];
+    private static int getUniqueValue (Field field, Cell cell) {
+        int line = cell.line;
+        int column = cell.column;
+
+        boolean isUnique;
+
+        for (int currentValue : cell.possibleValues) {
+
+            int segmentFirstColumn = column - column % 3;
+            int segmentFirstLine = line - line % 3;
+
+            isUnique = true;
+            for (int k = 0; k < 9; k++) {
+                if (k != column) {
+                    if (field.field[line][k].value == 0 && field.field[line][k].possibleValues.contains(currentValue)) {
+                        isUnique = false;
+                        break;
+                    }
+                }
+            }
+            if (isUnique) return currentValue;
+
+            isUnique = true;
+            for (int k = 0; k < 9; k++) {
+                if (k != line) {
+                    if (field.field[k][column].value == 0 && field.field[k][column].possibleValues.contains(currentValue)) {
+                        isUnique = false;
+                        break;
+                    }
+                }
+            }
+            if (isUnique) return currentValue;
+
+            isUnique = true;
+            for (int k = 0; k < 9; k++) {
+                if (((segmentFirstLine + k / 3) != line) || ((segmentFirstColumn + k % 3) != column)) {
+                    if (field.field[segmentFirstLine + k / 3][segmentFirstColumn + k % 3].value == 0 && field.field[segmentFirstLine + k / 3][segmentFirstColumn + k % 3].possibleValues.contains(currentValue)) {
+                        isUnique = false;
+                        break;
+                    }
+                }
+            }
+            if (isUnique) return currentValue;
+        }
+        return 0;
+    }
+
+    private static Field sudoku(Field OldField) {
+        Field field = new Field();
         for (int i = 0; i < 9; i++) {
             for (int j = 0; j < 9; j++) {
-                field[i][j] = new Cell(OldField[i][j].value, i, j);
+                field.field[i][j] = new Cell(OldField.field[i][j].value, i, j);
             }
         }
 
@@ -147,11 +99,12 @@ public class Sudoku {
 
                 for (int i = 0; i < 9; i++) {
                     for (int j = 0; j < 9; j++) {
-                        if (field[i][j].value == 0) {
-                            field[i][j].identPossibleValues(field);
+                        if (field.field[i][j].value == 0) {
+                            identPossibleValues(field, field.field[i][j]);
 
-                            if (field[i][j].possibleValues.size() == 1) {
-                                field[i][j].value = field[i][j].possibleValues.get(0);
+                            if (field.field[i][j].possibleValues.size() == 1) {
+                                int value = field.field[i][j].possibleValues.iterator().next();
+                                field.insert(i, j, value);
                                 isFindSinglePossibleValue = true;
                             }
                         }
@@ -161,11 +114,12 @@ public class Sudoku {
 
             for (int i = 0; i < 9; i++) {
                 for (int j = 0; j < 9; j++) {
-                    if (field[i][j].value == 0) {
-                        int uniqueValue = field[i][j].getUniqueValue(field);
+                    if (field.field[i][j].value == 0) {
+                        int uniqueValue = getUniqueValue(field, field.field[i][j]);
                         if (uniqueValue != 0) {
-                            field[i][j].value = uniqueValue;
+                            field.insert(i, j, uniqueValue);
                             isFindUniquePossibleValue = true;
+                            isFindSinglePossibleValue = true;
                         }
                     }
                 }
@@ -174,10 +128,10 @@ public class Sudoku {
 
         for (int i = 0; i < 9; i++) {
             for (int j = 0; j < 9; j++) {
-                if (field[i][j].value == 0) {
-                    for (int k = 0; k < field[i][j].possibleValues.size(); k++) {
-                        field[i][j].value = field[i][j].possibleValues.get(k);
-                        Cell[][] solution = sudoku(field);
+                if (field.field[i][j].value == 0) {
+                    for (int selectedValue : field.field[i][j].possibleValues) {
+                        field.field[i][j].value = selectedValue;
+                        Field solution = sudoku(field);
                         if (solution != null) {
                             return solution;
                         }
