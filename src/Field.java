@@ -1,22 +1,89 @@
+import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+
+import javafx.application.Application;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.scene.layout.Pane;
+import javafx.stage.Stage;
+
 
 class Field {
+
     Cell[][] field;
 
     Field() {
         field = new Cell[9][9];
     }
 
-    Field(String dir) throws Exception {
+    Field(String dir) {
         field = new Cell[9][9];
-        FileReader reader = new FileReader(dir);
-        int c;
-        int i = 0;
-        while((c = reader.read()) !=- 1){
-            if ((c >= '0') && (c <= '9')) {
-                field[i / 9][i % 9] = new Cell(c - '0', i / 9, i % 9);
-                i++;
+        ArrayList<Integer> digits = new ArrayList<>();
+        digits.addAll(Arrays.asList(1,2,3,4,5,6,7,8,9));
+        FileReader reader = null;
+        try {
+            reader = new FileReader(dir);
+            int c;
+            int i = 0;
+            while ((c = reader.read()) != -1) {
+                if ((c >= '0') && (c <= '9')) {
+                    field[i / 9][i % 9] = new Cell(c - '0', i / 9, i % 9);
+                    i++;
+                }
             }
+
+            if (i != 81) {
+                System.out.println("Ошибка");
+                System.exit(0);
+            }
+
+            for (int k = 0; k < 9; k++) {
+                ArrayList<Integer> currentDigits = new ArrayList<>(digits);
+                for (int n = 0; n < 9; n++) {
+                    if (field[k][n].value == 0);
+                    else if (currentDigits.contains(field[k][n].value)) {
+                        currentDigits.remove((Integer)field[k][n].value);
+                    }
+                    else{
+                        System.out.println("Ошибка");
+                        System.exit(0);
+                    }
+                }
+            }
+
+            for (int k = 0; k < 9; k++) {
+                ArrayList<Integer> currentDigits = new ArrayList<>(digits);
+                for (int n = 0; n < 9; n++) {
+                    if (field[n][k].value == 0);
+                    else if (currentDigits.contains(field[n][k].value)) {
+                        currentDigits.remove((Integer)field[n][k].value);
+                    }
+                    else {
+                        System.out.println("Ошибка");
+                        System.exit(0);
+                    }
+                }
+            }
+
+            for (int k = 0; k < 9; k++) {
+                ArrayList<Integer> currentDigits = new ArrayList<>(digits);
+                for (int n = 0; n < 9; n++) {
+                    if (field[n / 3 + (k / 3) * 3][n % 3 + (k % 3) * 3].value == 0);
+                    else if (currentDigits.contains(field[n / 3 + (k / 3) * 3][n % 3 + (k % 3) * 3].value)) {
+                        currentDigits.remove((Integer)field[n / 3 + (k / 3) * 3][n % 3 + (k % 3) * 3].value);
+                    }
+                    else {
+                        System.out.println("Ошибка");
+                        System.exit(0);
+                    }
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 
@@ -61,5 +128,8 @@ class Field {
             System.out.println();
         }
         System.out.println();
+    }
+    public Cell[][] getBoard() {
+        return field;
     }
 }

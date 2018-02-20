@@ -1,15 +1,28 @@
+import javafx.animation.AnimationTimer;
+import javafx.scene.control.Button;
+import javafx.scene.layout.Pane;
+import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
+
+import java.io.IOException;
+
+
 class Sudoku {
 
-    static void printSudokuSolution(String dir) throws Exception {
+    private int counter = 0;
 
-        Field field = new Field(dir);
+    private Field field;
 
-        field = sudoku(field);
+    void printSudokuSolution(String dir) throws Exception {
 
-        field.printSudoku();
+            field = new Field(dir);
+
+            field = sudoku(field);
+
+            field.printSudoku();
     }
 
-    private static void identPossibleValues (Field field, Cell cell) {
+    private void identPossibleValues (Field field, Cell cell) {
         int line = cell.line;
         int column = cell.column;
 
@@ -33,7 +46,7 @@ class Sudoku {
         }
     }
 
-    private static int getUniqueValue (Field field, Cell cell) {
+    private int getUniqueValue (Field field, Cell cell) {
         int line = cell.line;
         int column = cell.column;
 
@@ -80,13 +93,17 @@ class Sudoku {
         return 0;
     }
 
-    private static Field sudoku(Field OldField) {
+    private Field sudoku(Field OldField) throws Exception{
+
         Field field = new Field();
         for (int i = 0; i < 9; i++) {
             for (int j = 0; j < 9; j++) {
                 field.field[i][j] = new Cell(OldField.field[i][j].value, i, j);
             }
         }
+        paint(field);
+        Thread.sleep(1000);
+        field.printSudoku();
 
         boolean isFindSinglePossibleValue = true;
         boolean isFindUniquePossibleValue = true;
@@ -106,6 +123,12 @@ class Sudoku {
                                 int value = field.field[i][j].possibleValues.iterator().next();
                                 field.insert(i, j, value);
                                 isFindSinglePossibleValue = true;
+
+                                paint(field);
+                                Thread.sleep(1000);
+                                field.printSudoku();
+
+                               // counter++;
                             }
                         }
                     }
@@ -119,7 +142,12 @@ class Sudoku {
                         if (uniqueValue != 0) {
                             field.insert(i, j, uniqueValue);
                             isFindUniquePossibleValue = true;
-                            isFindSinglePossibleValue = true;
+
+                            paint(field);
+                            Thread.sleep(1000);
+                            field.printSudoku();
+
+                          //  counter++;
                         }
                     }
                 }
@@ -140,6 +168,17 @@ class Sudoku {
                 }
             }
         }
+
         return field;
     }
+
+    Field getField() {
+        return field;
+    }
+
+    private void paint(Field tempField){
+        Main.repaint(tempField);
+    }
+
+
 }
