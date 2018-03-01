@@ -5,6 +5,8 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.LinkedList;
 
 
 class Sudoku {
@@ -12,8 +14,13 @@ class Sudoku {
     private int counter = 0;
 
     private Field field;
+    //mb
+    public static ArrayList<Field> fields;
+    //
 
     void printSudokuSolution(String dir) throws Exception {
+
+        fields = new ArrayList<Field>();
 
             field = new Field(dir);
 
@@ -101,9 +108,13 @@ class Sudoku {
                 field.field[i][j] = new Cell(OldField.field[i][j].value, i, j);
             }
         }
-        paint(field);
-        Thread.sleep(1000);
+      //  paint(field);
+        //mb
         field.printSudoku();
+        fields.add(field);
+        //
+      //  Thread.sleep(1);
+
 
         boolean isFindSinglePossibleValue = true;
         boolean isFindUniquePossibleValue = true;
@@ -124,11 +135,12 @@ class Sudoku {
                                 field.insert(i, j, value);
                                 isFindSinglePossibleValue = true;
 
-                                paint(field);
-                                Thread.sleep(1000);
+                               // paint(field);
                                 field.printSudoku();
+                                fields.add(field);
+                             //   Thread.sleep(1);
 
-                               // counter++;
+
                             }
                         }
                     }
@@ -143,11 +155,14 @@ class Sudoku {
                             field.insert(i, j, uniqueValue);
                             isFindUniquePossibleValue = true;
 
-                            paint(field);
-                            Thread.sleep(1000);
+                           // paint(field);
+                            //
                             field.printSudoku();
+                            fields.add(field);
+                            //
+                          //  Thread.sleep(1);
 
-                          //  counter++;
+
                         }
                     }
                 }
@@ -176,9 +191,9 @@ class Sudoku {
         return field;
     }
 
-    private void paint(Field tempField){
-        Main.repaint(tempField);
-    }
+  //  private void paint(Field tempField){
+  //      Main.repaint(tempField);
+  //  }
 
 
 }

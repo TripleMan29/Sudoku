@@ -38,7 +38,7 @@ class Field {
 
             if (i != 81) {
                 System.out.println("Ошибка");
-                System.exit(0);
+                System.exit(1);
             }
 
             for (int k = 0; k < 9; k++) {
@@ -50,7 +50,7 @@ class Field {
                     }
                     else{
                         System.out.println("Ошибка");
-                        System.exit(0);
+                        System.exit(1);
                     }
                 }
             }
@@ -64,7 +64,7 @@ class Field {
                     }
                     else {
                         System.out.println("Ошибка");
-                        System.exit(0);
+                        System.exit(1);
                     }
                 }
             }
@@ -78,7 +78,7 @@ class Field {
                     }
                     else {
                         System.out.println("Ошибка");
-                        System.exit(0);
+                        System.exit(1);
                     }
                 }
             }

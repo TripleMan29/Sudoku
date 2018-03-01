@@ -1,8 +1,6 @@
-import javafx.animation.AnimationTimer;
-import javafx.animation.Timeline;
-import javafx.animation.TranslateTransition;
-import javafx.animation.TranslateTransitionBuilder;
+import javafx.animation.*;
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -21,9 +19,14 @@ import javafx.scene.text.TextAlignment;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 
+import javax.swing.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.Timer;
+
 
 public class Main extends Application {
-
+    int i;
     //   static int counter = 0;
     static Label label;
     static Sudoku sudoku;
@@ -103,9 +106,24 @@ public class Main extends Application {
 
         btn.setOnAction(event -> {
             try {
-
-                //        at.start();
+                i = 0;
                 sudoku.printSudokuSolution("Tests/test228.txt");
+
+                    Timeline timeline = new Timeline(
+                            new KeyFrame(
+                                    Duration.millis(50),
+                                    event1 -> {
+
+                                        repaint(Sudoku.fields.get(i));
+                                        i++;
+                                       // System.out.println(Sudoku.fields.size());
+                                    }
+                            )
+                    );
+                    timeline.setCycleCount(Sudoku.fields.size());
+                    timeline.play();
+
+
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -120,19 +138,11 @@ public class Main extends Application {
         primaryStage.show();
     }
 
-    // private void longProces
 
     public static void main(String[] args) throws Exception {
         sudoku = new Sudoku();
         launch(args);
     }
-
-//    protected AnimationTimer at = new AnimationTimer(){
-//        @Override
-//        public void handle(long now) {
-//            fsa();
-//        }
-//    };
 }
 
 class Cells extends StackPane {
